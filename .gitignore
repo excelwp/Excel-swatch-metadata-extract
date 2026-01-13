@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Streamlit
+.streamlit/
+
+# Secrets / env
+.env
+
+# Local uploads
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db

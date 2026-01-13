@@ -1,0 +1,6 @@
+streamlit==1.41.1
+pandas==2.2.3
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
+anthropic==0.43.1
+Pillow==10.4.0
