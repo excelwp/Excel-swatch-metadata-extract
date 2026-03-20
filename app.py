@@ -35,6 +35,14 @@ from db import (
 )
 
 load_dotenv()
+
+# 🔐 Load secrets for both local (.env) and Streamlit Cloud
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = st.secrets.get("ANTHROPIC_API_KEY", "")
+
+if "DATABASE_URL" not in os.environ:
+    os.environ["DATABASE_URL"] = st.secrets.get("DATABASE_URL", "")
+
 ensure_dirs()
 
 st.set_page_config(page_title="Wallpaper Metadata Extractor (Claude)", layout="wide")
