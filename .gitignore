@@ -5,10 +5,9 @@ __pycache__/
 *.pyd
 .venv/
 venv/
+.env
 env/
 
-# Streamlit
-.streamlit/
 
 # Secrets / env
 .env
