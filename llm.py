@@ -85,15 +85,24 @@ Output only the paragraph, no bullets, no headings.
 """.strip()
 
 
+def _extract_text(resp) -> str:
+    """Return the first text block's content, ignoring thinking/other block types."""
+    for block in resp.content:
+        if getattr(block, "type", None) == "text":
+            return block.text
+    raise RuntimeError(f"No text block found in response: {resp.content!r}")
+
+
 def claude_extract_metadata(image_b64: str, media_type: str, prompt: str) -> Dict[str, Any]:
     """
     media_type examples: "image/jpeg", "image/png", "image/webp"
     """
     c = _client()
     resp = c.messages.create(
-        model="claude-sonnet-4-20250514",  # Updated to current model
-        max_tokens=600,
-        temperature=0.2,
+        model="claude-sonnet-5",
+        max_tokens=1024,  # headroom for new tokenizer (~30% more tokens for same text)
+        thinking={"type": "disabled"},  # deterministic structured extraction; no reasoning needed
+        output_config={"effort": "low"},  # closest analog to old low-temperature determinism
         messages=[
             {
                 "role": "user",
@@ -104,16 +113,16 @@ def claude_extract_metadata(image_b64: str, media_type: str, prompt: str) -> Dic
             }
         ],
     )
-    text = resp.content[0].text  # Anthropic returns list of content blocks
+    text = _extract_text(resp)
     return json.loads(text)
 
 
 def claude_generate_description(image_b64: str, media_type: str, prompt: str) -> str:
     c = _client()
     resp = c.messages.create(
-        model="claude-sonnet-4-20250514",  # Updated to current model
-        max_tokens=350,
-        temperature=0.3,
+        model="claude-sonnet-5",
+        max_tokens=600,  # headroom for new tokenizer (~30% more tokens for same text)
+        thinking={"type": "disabled"},  # single-pass description, no reasoning needed
         messages=[
             {
                 "role": "user",
@@ -124,4 +133,4 @@ def claude_generate_description(image_b64: str, media_type: str, prompt: str) ->
             }
         ],
     )
-    return resp.content[0].text.strip()
+    return _extract_text(resp).strip()
