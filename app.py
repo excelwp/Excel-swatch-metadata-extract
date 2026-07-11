@@ -34,6 +34,8 @@ from db import (
     fetch_swatch_records,
 )
 
+from dotenv import load_dotenv
+
 load_dotenv()
 
 # 🔐 Load secrets for both local (.env) and Streamlit Cloud
@@ -383,15 +385,6 @@ def main():
     header()
 
     with st.sidebar:
-        st.markdown("### Setup")
-        if st.button("Initialize DB (run once)", help="Creates tables if they don't exist"):
-            try:
-                init_db("schema.sql")
-                st.success("DB initialized.")
-            except Exception as e:
-                st.error(f"DB init failed: {e}")
-
-        st.divider()
         st.markdown("### Notes")
         st.write("- Duplicate swatch_id uploads overwrite records and image file.")
         st.write("- Bulk mode auto-accepts and stores directly.")
